@@ -1,0 +1,55 @@
+<?php
+
+require_once __DIR__ . '/config.php';
+$ch = curl_init("https://fcm.googleapis.com/fcm/send");
+
+//The device token.
+$sazid_token = "cp3N6XPgC9Y:APA91bGT6sRhKxuAJxHD5BYnXnoAmec0bqYxS4HaScsC-zMVIOJoTrcRUaaEg_UJgBBGmD6cvPY1UsdbLi9peoS7qrbGNGObMKDsXM9SxicQ5JrQNSo2bjdh-km3s8x182xOekkJR0jf"; //token here
+$supan_token = "cVsqKqu9aK4:APA91bFFFfnlLn68-e8y1JEWxIBV7jVnLpqgfBSELIY5RBSYddpQZUbUB4guVGGnHdGdNoiSH_xOdsJcnLT32D99In1zihs-B3sQHnTvdjBI3yQW8ns7DuGR35YpuzjUQHTTYSxpN4qW"; //token here
+
+
+//Title of the Notification.
+$title = "FCM Cloud";
+
+//Body of the Notification.
+$body = "Hello Android & iOS Testing";
+
+//Creating the notification array.
+$notification = array('title' =>$title , 'text' => $body);
+
+//This array contains, the token and the notification. The 'to' attribute stores the token.
+$arrayToSend = array('to' => '/topics/news', 'notification' => $notification, 'time_to_live' => 10, 'priority'=>'high');
+
+//Generating JSON encoded string form the above array.
+$json = json_encode($arrayToSend);
+//Setup headers:
+//$key = "AAAA0tjjFLE:APA91bGi0IJ5-I0SWYHuDHq0gXIWpHwrcMY3hiFkNw3bTAJ9bkDy9VDhSmsnMlZxIsJUkKFoikxr10U2YyENRZi8SsXLWATt8KKHcZVjhx-uK4-GrOryCRPUahNuIF6O7cI0MkMDEmIm"
+
+ $headers = array(
+            'Authorization: key=' . FIREBASE_API_KEY,
+            'Content-Type: application/json'
+        );
+
+//Setup curl, add headers and post parameters.
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+curl_setopt($ch, CURLOPT_HTTPHEADER,$headers);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+//Send the request
+$response = curl_exec($ch);
+
+// Execute post
+
+if ($response === FALSE) {
+	die('Curl failed: ' . curl_error($ch));
+	echo curl_error($ch);
+} else {
+	echo $response;
+}
+
+//Close request
+curl_close($ch);
+return $response;
+
+?>
